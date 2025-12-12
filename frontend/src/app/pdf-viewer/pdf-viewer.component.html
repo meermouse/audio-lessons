@@ -1,18 +1,37 @@
 <div class="pdf-controls">
-  <button (click)="prev()" [disabled]="pageNumber() <= 1">
-    Prev
-  </button>
-
-  <span>
-    Page {{ pageNumber() }} / {{ totalPages() }}
-  </span>
-
-  <button (click)="next()" [disabled]="pageNumber() >= totalPages()">
-    Next
-  </button>
+  <button (click)="prev()" [disabled]="pageNumber() <= 1">Prev</button>
+  <span>Page {{ pageNumber() }} / {{ totalPages() }}</span>
+  <button (click)="next()" [disabled]="pageNumber() >= totalPages()">Next</button>
 </div>
 
-<canvas
-  #canvas
-  class="pdf-canvas">
-</canvas>
+<form class="range-form" [formGroup]="rangeForm()" (ngSubmit)="onSubmit()">
+  <label>
+    From page
+    <input type="number" formControlName="fromPage" min="1" [max]="totalPages()" />
+  </label>
+
+  <label>
+    To page
+    <input type="number" formControlName="toPage" min="1" [max]="totalPages()" />
+  </label>
+
+  <button type="submit" [disabled]="!canSubmit">Submit</button>
+
+  <div class="errors" *ngIf="rangeForm()?.touched && rangeForm()?.invalid">
+    <div *ngIf="rangeForm()?.get('fromPage')?.hasError('required')">From page is required.</div>
+    <div *ngIf="rangeForm()?.get('toPage')?.hasError('required')">To page is required.</div>
+    <div *ngIf="rangeForm()?.get('fromPage')?.hasError('min')">From page must be at least 1.</div>
+    <div *ngIf="rangeForm()?.get('toPage')?.hasError('min')">To page must be at least 1.</div>
+
+    <div *ngIf="rangeForm()?.hasError('rangeOrder')">From page must be ≤ To page.</div>
+    <div *ngIf="rangeForm()?.hasError('rangeBounds')">
+      Page range must be within 1 and {{ totalPages() }}.
+    </div>
+  </div>
+
+  <div class="errors" *ngIf="!totalPages()">
+    Load a PDF to submit a page range.
+  </div>
+</form>
+
+<canvas #canvas class="pdf-canvas"></canvas>
