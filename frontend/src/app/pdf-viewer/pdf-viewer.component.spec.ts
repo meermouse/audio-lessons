@@ -1,18 +1,17 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
-
-import { PdfViewer } from './pdf-viewer';
+import { PdfViewerComponent } from './pdf-viewer.component';
 
 describe('PdfViewer', () => {
-  let component: PdfViewer;
-  let fixture: ComponentFixture<PdfViewer>;
+  let component: PdfViewerComponent;
+  let fixture: ComponentFixture<PdfViewerComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [PdfViewer]
+      imports: [PdfViewerComponent]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(PdfViewer);
+    fixture = TestBed.createComponent(PdfViewerComponent);
     component = fixture.componentInstance;
     await fixture.whenStable();
   });
