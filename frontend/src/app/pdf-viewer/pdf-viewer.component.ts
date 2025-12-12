@@ -4,6 +4,7 @@ import { CommonModule } from '@angular/common';
 import { from, Subject, switchMap, takeUntil, filter } from 'rxjs';
 import { PdfjsService } from '../services/pdfjs.service';
 import { PDFDocumentProxy } from 'pdfjs-dist';
+import { ApiService } from '../services/api.service';
 
 @Component({
   selector: 'app-pdf-viewer',
@@ -25,6 +26,7 @@ export class PdfViewerComponent implements OnDestroy {
   rangeForm = signal<any>(null);
 
   constructor(
+    private apiService: ApiService,
     private fb: FormBuilder,
     private pdfjsService: PdfjsService
   ) {
@@ -164,6 +166,18 @@ export class PdfViewerComponent implements OnDestroy {
 
     // For now, just log. Next step will be: emit event / call backend job.
     console.log('Submit page range:', { fromPage, toPage });
+    this.apiService.uploadPdf(this.file()!).subscribe(response => {
+      console.log('Upload response:', response);
+      // Further actions can be taken here, like storing pdf_id, etc.
+      if(response.pdf_id) {
+        // this.apiService.getPdfInfo(response.pdf_id).subscribe(info => {
+        //   console.log('PDF Info:', info);
+        // });
+        this.apiService.createJob({ pdf_id: response.pdf_id, from_page: fromPage, to_page: toPage }).subscribe(jobResponse => {
+          console.log('Job Creation Response:', jobResponse);
+        });
+      }
+  });
   }
 
   next() {
