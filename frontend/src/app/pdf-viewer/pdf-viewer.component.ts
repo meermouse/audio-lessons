@@ -122,6 +122,39 @@ export class PdfViewerComponent implements OnDestroy {
     const pdfLoaded = !!this.pdf && this.totalPages() > 0;
     return pdfLoaded && this.rangeForm().valid;
   }
+
+  // Validation property accessors for template
+  get fromPageRequired(): boolean {
+    return this.rangeForm()?.get('fromPage')?.hasError('required') ?? false;
+  }
+
+  get toPageRequired(): boolean {
+    return this.rangeForm()?.get('toPage')?.hasError('required') ?? false;
+  }
+
+  get fromPageMin(): boolean {
+    return this.rangeForm()?.get('fromPage')?.hasError('min') ?? false;
+  }
+
+  get toPageMin(): boolean {
+    return this.rangeForm()?.get('toPage')?.hasError('min') ?? false;
+  }
+
+  get rangeOrderError(): boolean {
+    return this.rangeForm()?.hasError('rangeOrder') ?? false;
+  }
+
+  get rangeBoundsError(): boolean {
+    return this.rangeForm()?.hasError('rangeBounds') ?? false;
+  }
+
+  get formTouched(): boolean {
+    return this.rangeForm()?.touched ?? false;
+  }
+
+  get formInvalid(): boolean {
+    return this.rangeForm()?.invalid ?? false;
+  }
   
   onSubmit() {
     if (!this.canSubmit) return;

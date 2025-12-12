@@ -17,14 +17,14 @@
 
   <button type="submit" [disabled]="!canSubmit">Submit</button>
 
-  <div class="errors" *ngIf="rangeForm()?.touched && rangeForm()?.invalid">
-    <div *ngIf="rangeForm()?.get('fromPage')?.hasError('required')">From page is required.</div>
-    <div *ngIf="rangeForm()?.get('toPage')?.hasError('required')">To page is required.</div>
-    <div *ngIf="rangeForm()?.get('fromPage')?.hasError('min')">From page must be at least 1.</div>
-    <div *ngIf="rangeForm()?.get('toPage')?.hasError('min')">To page must be at least 1.</div>
+  <div class="errors" *ngIf="formTouched && formInvalid">
+    <div *ngIf="fromPageRequired">From page is required.</div>
+    <div *ngIf="toPageRequired">To page is required.</div>
+    <div *ngIf="fromPageMin">From page must be at least 1.</div>
+    <div *ngIf="toPageMin">To page must be at least 1.</div>
 
-    <div *ngIf="rangeForm()?.hasError('rangeOrder')">From page must be ≤ To page.</div>
-    <div *ngIf="rangeForm()?.hasError('rangeBounds')">
+    <div *ngIf="rangeOrderError">From page must be ≤ To page.</div>
+    <div *ngIf="rangeBoundsError">
       Page range must be within 1 and {{ totalPages() }}.
     </div>
   </div>
