@@ -1,0 +1,11 @@
+.pdf-controls {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.pdf-canvas {
+  max-width: 100%;
+  border: 1px solid #ddd;
+}

@@ -1,0 +1,9 @@
+<h1>Audio Lessons</h1>
+
+<input
+  type="file"
+  accept="application/pdf"
+  (change)="onFile($event)"
+/>
+
+<app-pdf-viewer [file]="file"></app-pdf-viewer>

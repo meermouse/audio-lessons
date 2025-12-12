@@ -1,0 +1,18 @@
+<div class="pdf-controls">
+  <button (click)="prev()" [disabled]="pageNumber <= 1">
+    Prev
+  </button>
+
+  <span>
+    Page {{ pageNumber }} / {{ totalPages }}
+  </span>
+
+  <button (click)="next()" [disabled]="pageNumber >= totalPages">
+    Next
+  </button>
+</div>
+
+<canvas
+  #canvas
+  class="pdf-canvas">
+</canvas>
