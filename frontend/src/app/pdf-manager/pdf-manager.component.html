@@ -3,6 +3,7 @@
 <div class="pdf-manager-container">
   <div class="pdf-reader-section">
     <app-pdf-reader
+      [storedPdfs]="storedPdfs()"
       (fileSelected)="onFileSelected($event)"
       (pdfIdSelected)="onPdfIdSelected($event)"
     ></app-pdf-reader>

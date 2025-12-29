@@ -1,6 +1,6 @@
-import { Component, OnInit, signal, output } from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { ApiService, PdfListItem } from '../services/api.service';
+import { PdfListItem } from '../services/api.service';
 
 @Component({
   selector: 'app-pdf-reader',
@@ -9,28 +9,10 @@ import { ApiService, PdfListItem } from '../services/api.service';
   styleUrl: './pdf-reader.component.css',
   imports: [CommonModule],
 })
-export class PdfReaderComponent implements OnInit {
-  storedPdfs = signal<PdfListItem[]>([]);
+export class PdfReaderComponent {
+  storedPdfs = input<PdfListItem[]>([]);
   fileSelected = output<File>();
   pdfIdSelected = output<string>();
-
-  constructor(private apiService: ApiService) {}
-
-  ngOnInit() {
-    this.loadStoredPdfs();
-  }
-
-  loadStoredPdfs() {
-    this.apiService.listPdfs().subscribe({
-      next: (response) => {
-        this.storedPdfs.set(response.pdfs || []);
-      },
-      error: (error) => {
-        console.error('Failed to load PDFs:', error);
-        this.storedPdfs.set([]);
-      }
-    });
-  }
 
   onFile(e: Event) {
     const input = e.target as HTMLInputElement;
