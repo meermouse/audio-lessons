@@ -1,4 +1,4 @@
-import { Component, OnInit, signal } from '@angular/core';
+import { Component, OnInit, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { ApiService, PdfListItem } from '../services/api.service';
@@ -11,9 +11,9 @@ import { ApiService, PdfListItem } from '../services/api.service';
   imports: [CommonModule, PdfViewerComponent],
 })
 export class PdfReaderComponent implements OnInit {
-  file: File | null = null;
   storedPdfs = signal<PdfListItem[]>([]);
-  selectedPdfId: string | null = null;
+  fileSelected = output<File>();
+  pdfIdSelected = output<string>();
 
   constructor(private apiService: ApiService) {}
 
@@ -35,12 +35,16 @@ export class PdfReaderComponent implements OnInit {
 
   onFile(e: Event) {
     const input = e.target as HTMLInputElement;
-    this.file = input.files?.[0] ?? null;
+    const file = input.files?.[0];
+    if (file) {
+      this.fileSelected.emit(file);
+    }
   }
 
   onPdfSelected(event: Event) {
     const selectElement = event.target as HTMLSelectElement;
-    this.selectedPdfId = selectElement.value;
-    this.file = null; // Clear file selection when using stored PDF
+    if (selectElement.value) {
+      this.pdfIdSelected.emit(selectElement.value);
+    }
   }
 }

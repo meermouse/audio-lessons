@@ -1,0 +1,14 @@
+<h1>Audio Lessons</h1>
+
+<div class="pdf-manager-container">
+  <div class="pdf-reader-section">
+    <app-pdf-reader
+      (fileSelected)="onFileSelected($event)"
+      (pdfIdSelected)="onPdfIdSelected($event)"
+    ></app-pdf-reader>
+  </div>
+
+  <div class="pdf-viewer-section">
+    <app-pdf-viewer [file]="file()" [pdfId]="selectedPdfId()"></app-pdf-viewer>
+  </div>
+</div>
