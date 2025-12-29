@@ -1,6 +1,5 @@
 import { Component, OnInit, signal, output } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { PdfViewerComponent } from '../pdf-viewer/pdf-viewer.component';
 import { ApiService, PdfListItem } from '../services/api.service';
 
 @Component({
@@ -8,7 +7,7 @@ import { ApiService, PdfListItem } from '../services/api.service';
   standalone: true,
   templateUrl: './pdf-reader.component.html',
   styleUrl: './pdf-reader.component.css',
-  imports: [CommonModule, PdfViewerComponent],
+  imports: [CommonModule],
 })
 export class PdfReaderComponent implements OnInit {
   storedPdfs = signal<PdfListItem[]>([]);

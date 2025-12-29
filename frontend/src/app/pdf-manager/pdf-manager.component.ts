@@ -17,10 +17,12 @@ export class PdfManagerComponent {
   onFileSelected(file: File) {
     this.file.set(file);
     this.selectedPdfId.set(null); // Clear PDF ID when uploading new file
+    console.log(this.file()?.name);
   }
 
   onPdfIdSelected(pdfId: string) {
     this.selectedPdfId.set(pdfId);
     this.file.set(null); // Clear file when selecting stored PDF
+    console.log(this.file()?.name);
   }
 }
