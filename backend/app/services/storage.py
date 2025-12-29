@@ -29,6 +29,10 @@ class Storage:
     async def exists(self, key: str) -> bool:
         raise NotImplementedError
 
+    async def list_keys(self, prefix: str) -> list[str]:
+        """List all keys with a given prefix."""
+        raise NotImplementedError
+
 class LocalStorage(Storage):
     def __init__(self, base_dir: str):
         self.base_dir = os.path.abspath(base_dir)
@@ -59,6 +63,19 @@ class LocalStorage(Storage):
 
     async def exists(self, key: str) -> bool:
         return os.path.exists(self._abs(key))
+
+    async def list_keys(self, prefix: str) -> list[str]:
+        base_path = self._abs(prefix)
+        keys = []
+        if os.path.exists(base_path):
+            for root, dirs, files in os.walk(base_path):
+                for file in files:
+                    full_path = os.path.join(root, file)
+                    # Convert back to key format (relative to base_dir)
+                    rel_path = os.path.relpath(full_path, self.base_dir)
+                    key = rel_path.replace(os.sep, "/")
+                    keys.append(key)
+        return keys
 
 class S3Storage(Storage):
     def __init__(self):
@@ -99,6 +116,17 @@ class S3Storage(Storage):
             return True
         except Exception:
             return False
+
+    async def list_keys(self, prefix: str) -> list[str]:
+        keys = []
+        paginator = self.s3.get_paginator('list_objects_v2')
+        try:
+            for page in paginator.paginate(Bucket=self.bucket, Prefix=prefix):
+                if 'Contents' in page:
+                    keys.extend([obj['Key'] for obj in page['Contents']])
+        except Exception:
+            pass
+        return keys
 
 def get_storage() -> Storage:
     if settings.STORAGE_BACKEND.lower() == "s3":

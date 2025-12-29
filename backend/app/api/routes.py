@@ -7,7 +7,7 @@ from pypdf import PdfReader
 from celery.result import AsyncResult
 
 from app.api.schemas import (
-    UploadPdfResponse, PdfInfoResponse,
+    UploadPdfResponse, PdfInfoResponse, ListPdfsResponse, PdfListItem,
     CreateJobRequest, CreateJobResponse, JobStatusResponse
 )
 from app.services.storage import get_storage, new_id
@@ -49,6 +49,18 @@ async def get_pdf_info(pdf_id: str):
     except Exception:
         raise HTTPException(status_code=400, detail="Could not read PDF.")
     return PdfInfoResponse(pdf_id=pdf_id, num_pages=num_pages)
+
+@router.get("/pdfs", response_model=ListPdfsResponse)
+async def list_pdfs():
+    """List all stored PDFs"""
+    keys = await storage.list_keys("pdfs/")
+    pdfs = []
+    for key in keys:
+        # Extract pdf_id from key (format: "pdfs/{pdf_id}.pdf")
+        if key.startswith("pdfs/") and key.endswith(".pdf"):
+            pdf_id = key[5:-4]  # Remove "pdfs/" prefix and ".pdf" suffix
+            pdfs.append(PdfListItem(pdf_id=pdf_id, pdf_key=key))
+    return ListPdfsResponse(pdfs=pdfs)
 
 @router.post("/jobs", response_model=CreateJobResponse)
 async def create_job(req: CreateJobRequest):

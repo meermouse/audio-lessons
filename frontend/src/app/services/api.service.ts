@@ -16,6 +16,15 @@ export interface PdfInfoResponse {
   num_pages: number;
 }
 
+export interface PdfListItem {
+  pdf_id: string;
+  pdf_key: string;
+}
+
+export interface ListPdfsResponse {
+  pdfs: PdfListItem[];
+}
+
 export interface CreateJobRequest {
   pdf_id: string;
   from_page: number;
@@ -76,6 +85,18 @@ export class ApiService {
   getPdfInfo(pdfId: string): Observable<PdfInfoResponse> {
     return this.http.get<PdfInfoResponse>(
       `${this.apiBaseUrl}/pdfs/${pdfId}`
+    ).pipe(
+      catchError(this.handleError)
+    );
+  }
+
+  /**
+   * List all uploaded PDFs
+   * @returns Observable with list of available PDFs
+   */
+  listPdfs(): Observable<ListPdfsResponse> {
+    return this.http.get<ListPdfsResponse>(
+      `${this.apiBaseUrl}/pdfs`
     ).pipe(
       catchError(this.handleError)
     );

@@ -1,9 +1,31 @@
 <h1>Audio Lessons</h1>
 
-<input
-  type="file"
-  accept="application/pdf"
-  (change)="onFile($event)"
-/>
+<div>
+  <h2>Select or Upload PDF</h2>
+  
+  <div>
+    <label for="stored-pdfs">Stored PDFs:</label>
+    <select 
+      id="stored-pdfs"
+      [value]="selectedPdfId || ''"
+      (change)="onPdfSelected($event)"
+    >
+      <option value="">-- Select a PDF --</option>
+      <option *ngFor="let pdf of storedPdfs" [value]="pdf.pdf_id">
+        {{ pdf.pdf_id }}
+      </option>
+    </select>
+  </div>
 
-<app-pdf-viewer [file]="file"></app-pdf-viewer>
+  <div style="margin-top: 1rem;">
+    <label for="pdf-upload">Or upload a new PDF:</label>
+    <input
+      id="pdf-upload"
+      type="file"
+      accept="application/pdf"
+      (change)="onFile($event)"
+    />
+  </div>
+</div>
+
+<app-pdf-viewer [file]="file" [pdfId]="selectedPdfId"></app-pdf-viewer>

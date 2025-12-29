@@ -8,6 +8,13 @@ class PdfInfoResponse(BaseModel):
     pdf_id: str
     num_pages: int
 
+class PdfListItem(BaseModel):
+    pdf_id: str
+    pdf_key: str
+
+class ListPdfsResponse(BaseModel):
+    pdfs: list[PdfListItem]
+
 class CreateJobRequest(BaseModel):
     pdf_id: str
     from_page: int = Field(ge=1)

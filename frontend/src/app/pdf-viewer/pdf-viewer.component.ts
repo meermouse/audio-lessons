@@ -14,6 +14,7 @@ import { ApiService } from '../services/api.service';
 })
 export class PdfViewerComponent implements OnDestroy {
   file = input<File | null>(null);
+  pdfId = input<string | null>(null);
 
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -45,27 +46,58 @@ export class PdfViewerComponent implements OnDestroy {
     );
     effect(() => {
       const file = this.file();
-      if (!file) return;
+      const pdfId = this.pdfId();
+      
+      if (!file && !pdfId) return;
 
-      this.pdfjsService
-        .getPdfjs()
-        .pipe(
-          filter(Boolean),
-          switchMap((pdfjs) =>
-            from(file.arrayBuffer()).pipe(
-              switchMap((buffer) =>
-                from(pdfjs.getDocument({ data: buffer }).promise)
+      let loadPdf$;
+      
+      if (file) {
+        // Load from uploaded file
+        loadPdf$ = this.pdfjsService
+          .getPdfjs()
+          .pipe(
+            filter(Boolean),
+            switchMap((pdfjs) =>
+              from(file.arrayBuffer()).pipe(
+                switchMap((buffer) =>
+                  from(pdfjs.getDocument({ data: buffer }).promise)
+                )
               )
             )
-          ),
-          takeUntil(this.destroy$)
-        )
-        .subscribe((pdf) => {
-          this.pdf = pdf;
-          this.pageNumber.set(1);
-          this.totalPages.set(pdf.numPages);
-          console.log('Total pages:', this.totalPages());
-          this.renderPage();
+          );
+      } else if (pdfId) {
+        // Load from stored PDF
+        loadPdf$ = this.pdfjsService
+          .getPdfjs()
+          .pipe(
+            filter(Boolean),
+            switchMap((pdfjs) =>
+              // Fetch the stored PDF file from storage endpoint
+              from(fetch(`http://localhost:8000/storage/pdfs/${pdfId}.pdf`).then(r => r.arrayBuffer())).pipe(
+                switchMap((buffer) =>
+                  from(pdfjs.getDocument({ data: buffer }).promise)
+                )
+              )
+            )
+          );
+      } else {
+        return;
+      }
+
+      loadPdf$
+        .pipe(takeUntil(this.destroy$))
+        .subscribe({
+          next: (pdf) => {
+            this.pdf = pdf;
+            this.pageNumber.set(1);
+            this.totalPages.set(pdf.numPages);
+            console.log('Total pages:', this.totalPages());
+            this.renderPage();
+          },
+          error: (error) => {
+            console.error('Error loading PDF:', error);
+          }
         });
     });
   };
