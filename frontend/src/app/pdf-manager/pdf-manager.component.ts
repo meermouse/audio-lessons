@@ -45,4 +45,21 @@ export class PdfManagerComponent implements OnInit {
     this.file.set(null); // Clear file when selecting stored PDF
     console.log(this.file()?.name);
   }
+
+  onPageRangeSubmitted(event: { pdf_id: string; from_page: number; to_page: number }) {
+    console.log('Page range submitted:', event);
+    // Handle the submission here - e.g., call API to create a job
+    this.apiService.createJob({
+      pdf_id: event.pdf_id,
+      from_page: event.from_page,
+      to_page: event.to_page
+    }).subscribe({
+      next: (response) => {
+        console.log('Job creation response:', response);
+      },
+      error: (error) => {
+        console.error('Failed to create job:', error);
+      }
+    });
+  }
 }

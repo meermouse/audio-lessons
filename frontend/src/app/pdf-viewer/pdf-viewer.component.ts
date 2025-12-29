@@ -1,4 +1,4 @@
-import { Component, ElementRef, ViewChild, input, OnDestroy, effect, signal } from '@angular/core';
+import { Component, ElementRef, ViewChild, input, OnDestroy, effect, signal, output } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { from, Subject, switchMap, takeUntil, filter } from 'rxjs';
@@ -15,6 +15,8 @@ import { ApiService } from '../services/api.service';
 export class PdfViewerComponent implements OnDestroy {
   file = input<File | null>(null);
   pdfId = input<string | null>(null);
+
+  pageRangeSubmitted = output<{ pdf_id: string; from_page: number; to_page: number }>();
 
   @ViewChild('canvas', { static: true })
   canvasRef!: ElementRef<HTMLCanvasElement>;
@@ -214,6 +216,25 @@ export class PdfViewerComponent implements OnDestroy {
 
   next() {
     if (!this.pdf || this.pageNumber() >= this.totalPages()) return;
+  }
+
+  onSubmit() {
+    if (!this.canUpload) return;
+
+    const fromPage = this.rangeForm().value.fromPage!;
+    const toPage = this.rangeForm().value.toPage!;
+    const currentPdfId = this.pdfId();
+
+    if (!currentPdfId) {
+      console.error('No PDF ID available for submission');
+      return;
+    }
+
+    this.pageRangeSubmitted.emit({
+      pdf_id: currentPdfId,
+      from_page: fromPage,
+      to_page: toPage
+    });
     this.pageNumber.update(n => n + 1);
     this.renderPage();
   }

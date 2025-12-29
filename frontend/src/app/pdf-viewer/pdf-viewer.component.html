@@ -16,6 +16,7 @@
   </label>
 
   <button type="submit" [disabled]="!canUpload">Upload</button>
+  <button type="button" (click)="onSubmit()" [disabled]="!canUpload">Submit</button>
 
   <div class="errors" *ngIf="formTouched && formInvalid">
     <div *ngIf="fromPageRequired">From page is required.</div>

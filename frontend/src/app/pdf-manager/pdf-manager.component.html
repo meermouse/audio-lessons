@@ -10,6 +10,10 @@
   </div>
 
   <div class="pdf-viewer-section">
-    <app-pdf-viewer [file]="file()" [pdfId]="selectedPdfId()"></app-pdf-viewer>
+    <app-pdf-viewer
+      [file]="file()"
+      [pdfId]="selectedPdfId()"
+      (pageRangeSubmitted)="onPageRangeSubmitted($event)"
+    ></app-pdf-viewer>
   </div>
 </div>
