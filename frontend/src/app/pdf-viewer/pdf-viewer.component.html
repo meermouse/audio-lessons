@@ -4,7 +4,7 @@
   <button (click)="next()" [disabled]="pageNumber() >= totalPages()">Next</button>
 </div>
 
-<form class="range-form" [formGroup]="rangeForm()" (ngSubmit)="onSubmit()">
+<form class="range-form" [formGroup]="rangeForm()" (ngSubmit)="onUpload()">
   <label>
     From page
     <input type="number" formControlName="fromPage" min="1" [max]="totalPages()" />
@@ -15,7 +15,7 @@
     <input type="number" formControlName="toPage" min="1" [max]="totalPages()" />
   </label>
 
-  <button type="submit" [disabled]="!canSubmit">Submit</button>
+  <button type="submit" [disabled]="!canUpload">Upload</button>
 
   <div class="errors" *ngIf="formTouched && formInvalid">
     <div *ngIf="fromPageRequired">From page is required.</div>

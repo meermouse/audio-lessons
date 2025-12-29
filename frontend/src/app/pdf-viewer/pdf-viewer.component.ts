@@ -152,7 +152,7 @@ export class PdfViewerComponent implements OnDestroy {
     };
   }
 
-  get canSubmit(): boolean {
+  get canUpload(): boolean {
     const pdfLoaded = !!this.pdf && this.totalPages() > 0;
     return pdfLoaded && this.rangeForm().valid;
   }
@@ -190,8 +190,8 @@ export class PdfViewerComponent implements OnDestroy {
     return this.rangeForm()?.invalid ?? false;
   }
   
-  onSubmit() {
-    if (!this.canSubmit) return;
+  onUpload() {
+    if (!this.canUpload) return;
 
     const fromPage = this.rangeForm().value.fromPage!;
     const toPage = this.rangeForm().value.toPage!;
