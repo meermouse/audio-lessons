@@ -1,9 +1,16 @@
 <div>
   <label for="pdf-upload">Upload a new PDF:</label>
   <input
+    #fileInput
     id="pdf-upload"
     type="file"
     accept="application/pdf"
     (change)="onFile($event)"
   />
+  <button 
+    (click)="onUpload(fileInput)"
+    [disabled]="!fileInput.files?.length || uploadInProgress"
+  >
+    {{ uploadInProgress ? 'Uploading...' : 'Upload' }}
+  </button>
 </div>

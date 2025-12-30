@@ -15,6 +15,7 @@ export class PdfReaderComponent {
   storedPdfs = input<PdfListItem[]>([]);
   fileSelected = output<File>();
   pdfIdSelected = output<string>();
+  fileUploaded = output<string>(); // New output for when file is uploaded with page range
 
   activeTab = signal<'select' | 'create'>('select');
 
@@ -24,6 +25,10 @@ export class PdfReaderComponent {
 
   onPdfIdSelected(pdfId: string) {
     this.pdfIdSelected.emit(pdfId);
+  }
+
+  onFileUploaded(pdfId: string) {
+    this.fileUploaded.emit(pdfId);
   }
 
   setActiveTab(tab: 'select' | 'create') {

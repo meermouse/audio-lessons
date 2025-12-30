@@ -29,6 +29,7 @@
     <div *ngIf="activeTab() === 'create'" class="tab-pane">
       <app-pdf-reader-create 
         (fileSelected)="onFileSelected($event)"
+        (fileUploaded)="onFileUploaded($event)"
       />
     </div>
   </div>

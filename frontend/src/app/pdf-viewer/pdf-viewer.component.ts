@@ -102,7 +102,7 @@ export class PdfViewerComponent implements OnDestroy {
           }
         });
     });
-  };
+  }
 
   private renderPage() {
     if (!this.pdf) return;
@@ -140,12 +140,10 @@ export class PdfViewerComponent implements OnDestroy {
       const fromPage = form.get('fromPage')?.value ?? null;
       const toPage = form.get('toPage')?.value ?? null;
 
-      // If PDF not loaded yet, don't block typing—submit button handles that.
       if (!fromPage || !toPage) return null;
 
       if (fromPage > toPage) return { rangeOrder: true };
 
-      // If we know totalPages, enforce upper bound
       if (this.totalPages() > 0 && (fromPage > this.totalPages() || toPage > this.totalPages())) {
         return { rangeBounds: true };
       }
@@ -159,7 +157,6 @@ export class PdfViewerComponent implements OnDestroy {
     return pdfLoaded && this.rangeForm().valid;
   }
 
-  // Validation property accessors for template
   get fromPageRequired(): boolean {
     return this.rangeForm()?.get('fromPage')?.hasError('required') ?? false;
   }
@@ -191,32 +188,6 @@ export class PdfViewerComponent implements OnDestroy {
   get formInvalid(): boolean {
     return this.rangeForm()?.invalid ?? false;
   }
-  
-  onUpload() {
-    if (!this.canUpload) return;
-
-    const fromPage = this.rangeForm().value.fromPage!;
-    const toPage = this.rangeForm().value.toPage!;
-
-    // For now, just log. Next step will be: emit event / call backend job.
-    console.log('Submit page range:', { fromPage, toPage });
-    this.apiService.uploadPdf(this.file()!).subscribe(response => {
-      console.log('Upload response:', response);
-      // Further actions can be taken here, like storing pdf_id, etc.
-      if(response.pdf_id) {
-        // this.apiService.getPdfInfo(response.pdf_id).subscribe(info => {
-        //   console.log('PDF Info:', info);
-        // });
-        this.apiService.createJob({ pdf_id: response.pdf_id, from_page: fromPage, to_page: toPage }).subscribe(jobResponse => {
-          console.log('Job Creation Response:', jobResponse);
-        });
-      }
-  });
-  }
-
-  next() {
-    if (!this.pdf || this.pageNumber() >= this.totalPages()) return;
-  }
 
   onSubmit() {
     if (!this.canUpload) return;
@@ -235,6 +206,10 @@ export class PdfViewerComponent implements OnDestroy {
       from_page: fromPage,
       to_page: toPage
     });
+  }
+
+  next() {
+    if (!this.pdf || this.pageNumber() >= this.totalPages()) return;
     this.pageNumber.update(n => n + 1);
     this.renderPage();
   }
