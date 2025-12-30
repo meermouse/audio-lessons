@@ -1,26 +1,35 @@
-<div>
+<div class="pdf-reader-panel">
   <h2>Select or Upload PDF</h2>
   
-  <div>
-    <label for="stored-pdfs">Stored PDFs:</label>
-    <select 
-      id="stored-pdfs"
-      (change)="onPdfSelected($event)"
+  <div class="tabs">
+    <button 
+      class="tab-button"
+      [class.active]="activeTab() === 'select'"
+      (click)="setActiveTab('select')"
     >
-      <option value="">-- Select a PDF --</option>
-      <option *ngFor="let pdf of storedPdfs()" [value]="pdf.pdf_id">
-        {{ pdf.pdf_id }}
-      </option>
-    </select>
+      Select
+    </button>
+    <button 
+      class="tab-button"
+      [class.active]="activeTab() === 'create'"
+      (click)="setActiveTab('create')"
+    >
+      Create
+    </button>
   </div>
 
-  <div style="margin-top: 1rem;">
-    <label for="pdf-upload">Or upload a new PDF:</label>
-    <input
-      id="pdf-upload"
-      type="file"
-      accept="application/pdf"
-      (change)="onFile($event)"
-    />
+  <div class="tab-content">
+    <div *ngIf="activeTab() === 'select'" class="tab-pane">
+      <app-pdf-reader-select 
+        [storedPdfs]="storedPdfs()"
+        (pdfIdSelected)="onPdfIdSelected($event)"
+      />
+    </div>
+
+    <div *ngIf="activeTab() === 'create'" class="tab-pane">
+      <app-pdf-reader-create 
+        (fileSelected)="onFileSelected($event)"
+      />
+    </div>
   </div>
 </div>

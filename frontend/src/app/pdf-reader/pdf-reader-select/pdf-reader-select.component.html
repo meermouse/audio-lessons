@@ -1,0 +1,12 @@
+<div>
+  <label for="stored-pdfs">Select a stored PDF:</label>
+  <select 
+    id="stored-pdfs"
+    (change)="onPdfSelected($event)"
+  >
+    <option value="">-- Select a PDF --</option>
+    <option *ngFor="let pdf of storedPdfs()" [value]="pdf.pdf_id">
+      {{ pdf.pdf_id }}
+    </option>
+  </select>
+</div>
