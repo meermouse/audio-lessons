@@ -15,6 +15,9 @@ redis==5.0.8
 # Storage (S3)
 boto3==1.35.18
 
+# LLM
+openai==1.40.0
+
 # Utilities
 aiofiles==24.1.0
 orjson==3.10.7
