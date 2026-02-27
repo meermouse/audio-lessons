@@ -96,8 +96,23 @@ async def job_status(task_id: str):
 @router.get("/jobs/{task_id}/download")
 async def download_bundle(task_id: str):
     res = AsyncResult(task_id)
+    
     if not res.successful():
-        raise HTTPException(status_code=409, detail="Job not complete yet.")
+        state_messages = {
+            "PENDING": "Job has not started yet. Please wait.",
+            "STARTED": "Job is currently running. Please wait.",
+            "RETRY": "Job encountered an issue and is retrying.",
+            "FAILURE": "Job failed to complete.",
+            "REVOKED": "Job was cancelled.",
+        }
+        message = state_messages.get(res.state, "Job is not yet complete.")
+        
+        error_detail = {
+            "message": message,
+            "state": res.state,
+            "info": str(res.info)
+        }
+        raise HTTPException(status_code=409, detail=error_detail)
 
     result = res.result or {}
     bkey = result.get("bundle_key")
