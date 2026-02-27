@@ -9,5 +9,5 @@ env/
 Thumbs.db
 .vscode/
 .idea/
-
+backend/data/jobs/
 backend/data/pdfs/

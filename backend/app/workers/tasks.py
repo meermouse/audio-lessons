@@ -12,7 +12,7 @@ def generate_lesson_job(self, pdf_key: str, from_page: int, to_page: int, job_id
     # In local mode, we can access by path. In S3 mode, you can either:
     # (a) presign+download to temp, or (b) stream via boto3 to a temp file.
     # For now we implement: presign+download for S3.
-    pdf_ref = self._get_pdf_local_path(storage, pdf_key)
+    pdf_ref = _get_pdf_local_path(storage, pdf_key)
 
     bundle_key = f"jobs/{job_id}/bundle.zip"
     build_lesson_bundle(pdf_ref, from_page, to_page, storage, bundle_key)
@@ -44,5 +44,3 @@ def _get_pdf_local_path(storage, pdf_key: str) -> str:
         return dest
     return path_or_url
 
-# attach helper as attribute to avoid clutter above
-generate_lesson_job._get_pdf_local_path = staticmethod(_get_pdf_local_path)

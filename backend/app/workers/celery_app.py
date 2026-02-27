@@ -13,3 +13,6 @@ celery.conf.update(
     accept_content=["json"],
     task_track_started=True,
 )
+
+# Import tasks to register them
+from app.workers import tasks  # noqa: F401, E402
